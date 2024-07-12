@@ -68,7 +68,7 @@ function Signup() {
                     <div className="flex min-h-full flex-col justify-center px-6 p-12 lg:px-4">
                         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                             <h1 className='text-4xl font-semibold text-center'>Create Your Account</h1>
-                            <h2 className="leading-0-tracking- text-gray-500 text-center">Sign up to see photos and videos from your friends</h2>
+                          
                         </div>
                         <div className="rounded-t mb-0 px-6 py-6">
                             <div className="btn-wrapper text-center">
@@ -156,20 +156,18 @@ function Signup() {
                                 </Form>
                             </Formik>
 
-                            <p className="mt-10 text-center text-sm ">
-                                Already a member?
                                 <p className="mt-10 text-center text-sm ">
                                     Already a member?
                                     <Link to='/login' className="font-semibold leading- text-violet-800 hover:text-indigo-500">sign in</Link>
                                 </p>
-                            </p>
+                     
                         </div>
                     </div>
                 </div>
             </div>
          
-        </div>
+        </div>  
     )
-}
+}   
 
 export default Signup

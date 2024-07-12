@@ -1,20 +1,18 @@
-import { ImagePlus } from 'lucide-react'
-import Story from '../components/story/Story'
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from 'react';
-import AddPost from '../components/AddPost';
-import HomePageShimmer from '../components/shimmerUi/homePageShimmer'
-import { getPosts } from '../services/api/user/apiMethods';
 import { toast } from 'sonner';
-import Posts from '../components/Post';
-import UserSuggestionBar from '../components/userSuggestionBar';
+import { useNavigate } from "react-router-dom";
+import { logout } from "../redux/reducers/authSlice";
+
 
 
 function HomePage() {
   const selectUser = (state) => state.auth.user
   const user = useSelector(selectUser)
   const userId = user._id || "";
-
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+  
   const [loading, setLoading] = useState(false)
   const [posts, setPosts] = useState([])
   const [showModal, setShowModal] = useState(false);
@@ -42,39 +40,27 @@ function HomePage() {
       })
   }
 
+
+    const handleLogout = () => {
+      dispatch(logout());
+      localStorage.removeItem("email");
+      toast.info("logout successful")
+      navigate("/login")
+    }
+
+
   return (
     <>
-      <div className="flex flex-col h-full">
-        <div>
-          <div className=" ms-96 mt-6 w-12/12">
-            <Story />
-          </div>
-          <div>
-            <button onClick={() => setShowModal(true)} class="fixed bottom-8 right-32 mb-8 mr-8 bg-myViolet hover:bg-violet-900 text-black font-bold py-5 px-5 rounded-2xl shadow-xl shadow-gray-600">
-              <ImagePlus size={30} />
-            </button>
-          </div>
-        </div>
-
-        {/* shimmer */}
-        {loading ? (
-          <div>
-            {Array.from({ length: 5 }).map((_, index) => (
-              <div key={index}>
-                <HomePageShimmer />
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div>
-            {posts.map((post) => (
-              <Posts key={post._id} post={post} />
-            ))}
-          </div>
-        )}
-        {showModal && <AddPost setNewPost={setPosts} setShowModal={setShowModal} />}
-      </div>
-      <UserSuggestionBar />
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+      <h1 className="text-4xl font-bold mb-4">Welcome</h1>
+      <p className="text-2xl mb-4">😊</p>
+      <button
+        onClick={handleLogout}
+        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
+      >
+        Logout
+      </button>
+    </div>
     </>
   )
 }

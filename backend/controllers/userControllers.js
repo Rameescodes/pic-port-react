@@ -7,7 +7,6 @@ const bcrypt = require('bcryptjs');
 const User = require('../models/userModel')
 
 //connectionModel
-const Connections = require('../models/connectionModel')
 
 // helpers import
 
@@ -300,101 +299,6 @@ const resetPassword = asyncHandler(async (req, res) => {
 
 })
 
-// ! get user details
-// ? GET /user-details
-
-const getUserDetails = asyncHandler(async (req, res) => {
-    const { userId } = req.params;
-    const user = await User.findById(userId)
-    // const connection = await connection.findOne({ userId })
-    if( user ) {
-        res.status(200).json({ user })
-    } else {
-        res.status(404)
-        throw new Error("user not found")
-    }
-})
-
-// ! edit profile
-// ? PATCH /edit-profile
-
-const editProfile = asyncHandler(async (req, res) => {
-    const { userId, image, name, phone, bio, isPrivate } = req.body;
-    const user = await User.findById(userId)
-    if (!user) {
-        res.status(404)
-        throw new Error("user not found")
-    }
-
-    if (name) user.name = name
-    if (image) user.profileImg = image
-    if (phone) user.phone = phone
-    if (bio) user.bio = bio
-    if (isPrivate !== undefined) user.isPrivate = isPrivate
-
-
-    await user.save();
-
-
-    res.status(200).json({
-        _id: user.id,
-        username: user.name,
-        email: user.email,
-        profileImg: user.profileImg,
-        savedPost: user.savedPost,
-        bio: user.bio,
-        phone: user.phone,
-        isPrivate: user.isPrivate,
-        isVerified: user.isVerified,
-        token: generateToken(user.id)
-    })
-})
-
-// ! search users
-// ? POST /search-users
-const searchedUser = asyncHandler(async (req, res) => {
-    const users = await User.find({}, { name: 1, profileImg: 1 });
-    res.status(200).json({ users })
-
-})
-// ! get user suggestion
-// ? GET /get-suggestions
-const userSuggestions = asyncHandler(async (req, res) => {
-    const { userId, searchTerm } = req.body;
-
-    const connection = await Connections.findOne({ userId });
-    if (!connection || (connection?.followers.length === 0 && connection?.following.length === 0)) {
-        let users;
-        if (!searchTerm) {
-            users = await User.find({ _id: { $ne: userId } });
-        } else {
-            users = await User.find({
-                userName: { $regex: searchTerm, $options: "i" },
-                _id: { $ne: userId },
-            });
-        }
-        res.status(200).json({ suggestedUsers: users });
-        return;
-    }
-
-    const followingIds = connection.following.map((user) => user._id);
-    const requestedIds = connection.requestSent.map((user) => user._id);
-
-    let suggestedUsers;
-    if (searchTerm) {
-        suggestedUsers = await User.find({
-            userName: { $regex: searchTerm, $options: "i" },
-            isBlocked: false,
-        }).limit(6).sort({ isVerified: -1 });
-    } else {
-        suggestedUsers = await User.find({
-            _id: { $nin: [...followingIds, ...requestedIds, userId] },
-        }).limit(6).sort({ isVerified: -1 });
-    }
-
-    res.status(200).json({ suggestedUsers });
-
-})
 
 module.exports = {
     registerUser,
@@ -404,11 +308,7 @@ module.exports = {
     loginUser,
     forgotPassword,
     forgotPasswordOtp,
-    resetPassword,
-    getUserDetails,
-    editProfile,
-    searchedUser,
-    userSuggestions
+    resetPassword
 }
 
 

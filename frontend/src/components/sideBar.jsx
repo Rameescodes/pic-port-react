@@ -51,9 +51,9 @@ function Sidebar() {
                                 ? "text-myViolet border-r-2 border-myViolet"
                                 : "text-myText"
                                 }  rounded-lg`}
-                            to={"/"}
+                            to={"/notifications"}
                         >
-                            <BellRing />
+                            <BellRing size={30}/>   
                             <span className="mx-5 ">Notifications</span>
                         </NavLink>
                         <NavLink
@@ -103,8 +103,8 @@ function Sidebar() {
                                 }  rounded-lg`}
                             to={"/settings"}
                         >
-                            {/* <ListCollapse /> */}
-                            {/* <span className="mx-5 ">More</span> */}
+                            <ListCollapse />
+                            <span className="mx-5 ">More</span>
                         </NavLink>
                         {/* Add more navigation links */}
                     </nav>
